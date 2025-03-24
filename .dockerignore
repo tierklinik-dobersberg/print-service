@@ -1,0 +1,6 @@
+/.github
+go.work
+go.work.sum
+/cmds/longrunningcli
+LICENSE
+README.md
