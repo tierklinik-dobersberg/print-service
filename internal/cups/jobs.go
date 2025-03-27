@@ -3,6 +3,7 @@ package cups
 import (
 	"fmt"
 	"log/slog"
+	"strconv"
 
 	"github.com/hashicorp/go-multierror"
 	"github.com/phin1x/go-ipp"
@@ -77,6 +78,16 @@ type Job struct {
 	Progress    int
 
 	OperationID string
+}
+
+func (j Job) ToProto() *printingv1.Job {
+	return &printingv1.Job{
+		Id:       strconv.Itoa(j.ID),
+		Name:     j.Name,
+		State:    j.State.ToProto(),
+		Progress: int32(j.Progress),
+		Printer:  j.PrinterURI,
+	}
 }
 
 func (cli *Client) ListJobs(printer string) ([]Job, error) {

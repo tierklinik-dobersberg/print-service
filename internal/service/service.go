@@ -158,6 +158,40 @@ func (svc *Service) PrintDocument(ctx context.Context, req *connect.Request[v1.D
 	return connect.NewResponse(operation), nil
 }
 
+func (svc *Service) ListJobs(ctx context.Context, req *connect.Request[v1.ListJobsRequest]) (*connect.Response[v1.ListJobsResponse], error) {
+	var printers []string
+
+	if len(req.Msg.Printers) == 0 {
+		all, err := svc.providers.CUPS.ListPrinters()
+		if err != nil {
+			return nil, fmt.Errorf("failed to get printers: %w", err)
+		}
+
+		for _, p := range all {
+			printers = append(printers, p.Name)
+		}
+	} else {
+		printers = req.Msg.Printers
+	}
+
+	var jobs []*v1.Job
+
+	for _, p := range printers {
+		pj, err := svc.providers.CUPS.ListJobs(p)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get jobs for printer %q: %w", p, err)
+		}
+
+		for _, j := range pj {
+			jobs = append(jobs, j.ToProto())
+		}
+	}
+
+	return connect.NewResponse(&v1.ListJobsResponse{
+		Jobs: jobs,
+	}), nil
+}
+
 func isOfficeRequest(name string) bool {
 	ext := filepath.Ext(name)
 

@@ -23,5 +23,25 @@ func GetPrinterCommand(root *cli.Root) *cobra.Command {
 		},
 	}
 
+	cmd.AddCommand(GetListJobsCommand(root))
+
+	return cmd
+}
+
+func GetListJobsCommand(root *cli.Root) *cobra.Command {
+	cmd := &cobra.Command{
+		Use: "jobs",
+		Run: func(cmd *cobra.Command, args []string) {
+			res, err := root.PrintService().ListJobs(root.Context(), connect.NewRequest(&printingv1.ListJobsRequest{
+				Printers: args,
+			}))
+			if err != nil {
+				logrus.Fatalf(err.Error())
+			}
+
+			root.Print(res.Msg)
+		},
+	}
+
 	return cmd
 }
