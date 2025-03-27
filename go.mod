@@ -89,6 +89,6 @@ require (
 
 require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.5-20250307204501-0409229c3780.1 // indirect
-	github.com/tierklinik-dobersberg/apis v0.42.0
+	github.com/tierklinik-dobersberg/apis v0.42.2
 	google.golang.org/protobuf v1.36.6
 )

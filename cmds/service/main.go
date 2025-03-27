@@ -98,7 +98,7 @@ func main() {
 
 	// Enable service discovery
 	if err := discovery.Register(ctx, catalog, &discovery.ServiceInstance{
-		Name:    wellknown.LongrunningV1ServiceScope,
+		Name:    wellknown.PrintV1ServiceScope,
 		Address: cfg.ListenAddress,
 	}); err != nil {
 		slog.Error("failed to register service and service catalog", slog.Any("error", err.Error()))

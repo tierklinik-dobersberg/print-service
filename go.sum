@@ -1082,6 +1082,8 @@ github.com/tierklinik-dobersberg/apis v0.41.3 h1:+34LIiuG8aDjkDx1fKy69YfXC/wy+7a
 github.com/tierklinik-dobersberg/apis v0.41.3/go.mod h1:gXuKcer0mMcGWw3DN9M05trUk3LenkcUkSO/pUGSqIA=
 github.com/tierklinik-dobersberg/apis v0.42.0 h1:ps5ELp7k1iv2jxxxDKGPuZXdlqLb1r3V3t8tDeKDq2E=
 github.com/tierklinik-dobersberg/apis v0.42.0/go.mod h1:gXuKcer0mMcGWw3DN9M05trUk3LenkcUkSO/pUGSqIA=
+github.com/tierklinik-dobersberg/apis v0.42.2 h1:l0A2P4OWNQYYV/vuYESv3xKtecPpVna/GbAdSuyhfj4=
+github.com/tierklinik-dobersberg/apis v0.42.2/go.mod h1:gXuKcer0mMcGWw3DN9M05trUk3LenkcUkSO/pUGSqIA=
 github.com/tv42/httpunix v0.0.0-20150427012821-b75d8614f926/go.mod h1:9ESjWnEqriFuLhtthL60Sar/7RFoluCcXsuvEwTV5KM=
 github.com/ulikunitz/xz v0.5.10 h1:t92gobL9l3HE202wg3rlk19F6X+JOxl9BBrCCMYEYd8=
 github.com/ulikunitz/xz v0.5.10/go.mod h1:nbz6k7qbPmH4IRqmfOplQw/tblSgqTqBwxkY0oWt/14=
