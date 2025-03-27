@@ -147,7 +147,7 @@ func (svc *Service) PrintDocument(ctx context.Context, req *connect.Request[v1.D
 		map[string]any{
 			ipp.AttributeRequestingUserName:   user.Username,
 			ipp.AttributeOrientationRequested: string(orientation),
-			cups.AttributePrintColorMode:      color,
+			cups.AttributePrintColorMode:      string(color),
 		},
 	)
 	if err != nil {
