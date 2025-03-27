@@ -108,7 +108,7 @@ func (cli *Client) PrintWithOperation(ctx context.Context, lrun longrunningv1con
 
 	id, err := cli.Print(doc, printer, customAttrs)
 	if err != nil {
-		if _, err := lrun.CompleteOperation(ctx, connect.NewRequest(&longrunningv1.CompleteOperationRequest{
+		if _, err := lrun.CompleteOperation(context.Background(), connect.NewRequest(&longrunningv1.CompleteOperationRequest{
 			UniqueId:  operationResponse.Msg.Operation.UniqueId,
 			AuthToken: operationResponse.Msg.AuthToken,
 			Result: &longrunningv1.CompleteOperationRequest_Error{
@@ -135,7 +135,7 @@ func (cli *Client) PrintWithOperation(ctx context.Context, lrun longrunningv1con
 
 			switch j.State {
 			case JobStatePending, JobStateProcessing, JobStateHeld:
-				update(ctx, j)
+				update(context.Background(), j)
 				continue
 
 			default:
@@ -154,7 +154,7 @@ func (cli *Client) PrintWithOperation(ctx context.Context, lrun longrunningv1con
 					slog.Error("failed to perpare print result", "error", err)
 				}
 
-				if _, err := lrun.CompleteOperation(ctx, connect.NewRequest(&longrunningv1.CompleteOperationRequest{
+				if _, err := lrun.CompleteOperation(context.Background(), connect.NewRequest(&longrunningv1.CompleteOperationRequest{
 					UniqueId:  operationResponse.Msg.Operation.UniqueId,
 					AuthToken: operationResponse.Msg.AuthToken,
 					Result: &longrunningv1.CompleteOperationRequest_Success{
