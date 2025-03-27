@@ -86,7 +86,7 @@ func (j Job) ToProto() *printingv1.Job {
 		Name:        j.Name,
 		State:       j.State.ToProto(),
 		Progress:    int32(j.Progress),
-		Printer:     j.PrinterURI,
+		Printer:     j.PrinterName,
 		OperationId: j.OperationID,
 	}
 }
