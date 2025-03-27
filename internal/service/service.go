@@ -20,7 +20,6 @@ import (
 	"github.com/tierklinik-dobersberg/apis/gen/go/tkd/printing/v1/printingv1connect"
 	"github.com/tierklinik-dobersberg/apis/pkg/auth"
 	"github.com/tierklinik-dobersberg/print-service/internal/config"
-	"github.com/tierklinik-dobersberg/print-service/internal/cups"
 )
 
 type Service struct {
@@ -124,20 +123,22 @@ func (svc *Service) PrintDocument(ctx context.Context, req *connect.Request[v1.D
 		MimeType: mime,
 	}
 
-	orientation := cups.OrientationPortrait
-	if req.Msg.Orientation == v1.Orientation_ORIENTATION_LANDSCAPE {
-		orientation = cups.OrientationLandscape
-	}
+	/*
+		orientation := cups.OrientationPortrait
+		if req.Msg.Orientation == v1.Orientation_ORIENTATION_LANDSCAPE {
+			orientation = cups.OrientationLandscape
+		}
 
-	color := cups.ColorModeAuto
-	switch req.Msg.ColorMode {
-	case v1.ColorMode_COLORMODE_AUTO:
-		color = cups.ColorModeAuto
-	case v1.ColorMode_COLORMODE_COLOR:
-		color = cups.ColorModeColor
-	case v1.ColorMode_COLORMODE_GRAYSCALE:
-		color = cups.ColorModeGrayScale
-	}
+		color := cups.ColorModeAuto
+		switch req.Msg.ColorMode {
+		case v1.ColorMode_COLORMODE_AUTO:
+			color = cups.ColorModeAuto
+		case v1.ColorMode_COLORMODE_COLOR:
+			color = cups.ColorModeColor
+		case v1.ColorMode_COLORMODE_GRAYSCALE:
+			color = cups.ColorModeGrayScale
+		}
+	*/
 
 	operation, err := svc.providers.CUPS.PrintWithOperation(
 		ctx,
@@ -145,9 +146,9 @@ func (svc *Service) PrintDocument(ctx context.Context, req *connect.Request[v1.D
 		doc,
 		req.Msg.Printer,
 		map[string]any{
-			ipp.AttributeRequestingUserName:   user.Username,
-			ipp.AttributeOrientationRequested: string(orientation),
-			cups.AttributePrintColorMode:      string(color),
+			ipp.AttributeRequestingUserName: user.Username,
+			// ipp.AttributeOrientationRequested: string(orientation),
+			// cups.AttributePrintColorMode:      string(color),
 		},
 	)
 	if err != nil {
