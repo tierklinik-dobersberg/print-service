@@ -249,7 +249,12 @@ func (svc *Service) renderHTML(ctx context.Context, name string, reader io.Reade
 		return nil, err
 	}
 
-	return res.Body, nil
+	content, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return io.NopCloser(bytes.NewReader(content)), nil
 }
 
 func (svc *Service) renderOffice(ctx context.Context, name string, reader io.Reader, orientation v1.Orientation) (io.Reader, error) {
