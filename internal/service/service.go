@@ -104,7 +104,7 @@ func (svc *Service) PrintDocument(ctx context.Context, req *connect.Request[v1.D
 
 	// check if we need to convert the given mime-type to PDF:
 	// TODO(ppacher): this could actually be part of the long-running-operation.
-	wrapped, err := svc.mayConvertToPDF(ctx, req.Msg.Name, mime, content, req.Msg.Orientation)
+	wrapped, mime, err := svc.mayConvertToPDF(ctx, req.Msg.Name, mime, content, req.Msg.Orientation)
 	if err != nil {
 		return nil, err
 	}
@@ -204,11 +204,11 @@ func isOfficeRequest(name string) bool {
 	}
 }
 
-func (svc *Service) mayConvertToPDF(ctx context.Context, name, mime string, reader io.Reader, orientation v1.Orientation) (io.Reader, error) {
+func (svc *Service) mayConvertToPDF(ctx context.Context, name, mime string, reader io.Reader, orientation v1.Orientation) (io.Reader, string, error) {
 	// Skip PDF, postscript, octet-stream,  plain text and image documents
 	switch mime {
 	case "application/pdf", "application/postscript", "text/plain":
-		return reader, nil
+		return reader, mime, nil
 
 		// this might be an office request
 	case "text/html":
@@ -219,14 +219,14 @@ func (svc *Service) mayConvertToPDF(ctx context.Context, name, mime string, read
 			return svc.renderOffice(ctx, name, reader, orientation)
 		}
 
-		return reader, nil
+		return reader, mime, nil
 	}
 }
 
-func (svc *Service) renderHTML(ctx context.Context, name string, reader io.Reader, orientation v1.Orientation) (io.Reader, error) {
+func (svc *Service) renderHTML(ctx context.Context, name string, reader io.Reader, orientation v1.Orientation) (io.Reader, string, error) {
 	indexDoc, err := document.FromReader(name, reader)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	req := gotenberg.NewHTMLRequest(indexDoc)
@@ -246,21 +246,22 @@ func (svc *Service) renderHTML(ctx context.Context, name string, reader io.Reade
 
 	res, err := svc.providers.Gotenberg.Send(ctx, req)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	content, err := io.ReadAll(res.Body)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
+	slog.Info("successfully converted HTML document to PDF", "size", len(content))
 
-	return io.NopCloser(bytes.NewReader(content)), nil
+	return io.NopCloser(bytes.NewReader(content)), "application/pdf", nil
 }
 
-func (svc *Service) renderOffice(ctx context.Context, name string, reader io.Reader, orientation v1.Orientation) (io.Reader, error) {
+func (svc *Service) renderOffice(ctx context.Context, name string, reader io.Reader, orientation v1.Orientation) (io.Reader, string, error) {
 	indexDoc, err := document.FromReader(name, reader)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	req := gotenberg.NewOfficeRequest(indexDoc)
@@ -274,8 +275,8 @@ func (svc *Service) renderOffice(ctx context.Context, name string, reader io.Rea
 
 	res, err := svc.providers.Gotenberg.Send(ctx, req)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
-	return res.Body, nil
+	return res.Body, "application/pdf", nil
 }
