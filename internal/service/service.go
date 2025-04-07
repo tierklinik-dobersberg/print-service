@@ -236,6 +236,8 @@ func (svc *Service) renderHTML(ctx context.Context, name string, reader io.Reade
 	// TODO(ppacher): make this configurable
 	req.PaperSize(gotenberg.A4)
 	req.Margins(gotenberg.NormalMargins)
+	req.PrintBackground()
+	req.FailOnConsoleExceptions()
 
 	switch orientation {
 	case v1.Orientation_ORIENTATION_LANDSCAPE:
